@@ -18,13 +18,20 @@ router.post("/createElection", async (req, res) => {
     const accounts = await web3.eth.getAccounts();
     console.log("Using account:", accounts[0]);
 
-    await contractInstance.methods.createElection(name, candidates).send({
+    const result = await contractInstance.methods.createElection(name, candidates).send({
       from: accounts[0], // Admin account
       gas: 3000000,
     });
+    console.log("Election created with ID:", result);
+
+    const electionCount = await contractInstance.methods.electionCount().call();
+    console.log("Total Elections:", Number(electionCount));
+
+    const newElectionId = Number(electionCount) - 1;
 
     res.status(200).json({
       success: true,
+      electionId: newElectionId,
       message: "Election created successfully!",
     });
   } catch (error) {
