@@ -17,6 +17,7 @@ contract VotingSystem {
     }
 
     Election[] public elections;
+    uint public electionCount;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not authorized");
@@ -43,7 +44,7 @@ contract VotingSystem {
     }
 
     // Create a new election
-    function createElection(string memory _name, string[] memory _candidates) public onlyOwner {
+    function createElection(string memory _name, string[] memory _candidates) public onlyOwner returns (uint) {
         Election storage newElection = elections.push();
         newElection.name = _name;
         newElection.isActive = true;
@@ -51,6 +52,9 @@ contract VotingSystem {
         for (uint i = 0; i < _candidates.length; i++) {
             newElection.candidates.push(Candidate({ name: _candidates[i], voteCount: 0 }));
         }
+
+        electionCount++; // Increment election count
+        return electionCount - 1; // Return the new election ID
     }
 
     // Cast a vote
