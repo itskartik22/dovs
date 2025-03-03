@@ -43,7 +43,7 @@ const CastVote = () => {
       const res = await axiosInstance.post("/castVote", {
         electionId,
         candidateId,
-        accountInd: 0, // Default Account
+        accountInd: 1, // Default Account
       });
 
       if (res.data.success) {
@@ -69,7 +69,9 @@ const CastVote = () => {
       {loading && <p className="text-blue-500 text-center">Loading...</p>}
 
       {elections.length === 0 && !loading && (
-        <p className="text-center text-lg text-gray-500">No Active Elections Found</p>
+        <p className="text-center text-lg text-gray-500">
+          No Active Elections Found
+        </p>
       )}
 
       {elections.map((election) => (
@@ -78,16 +80,18 @@ const CastVote = () => {
             {election.name}
           </h2>
 
-          {election.results?.length > 0 ? (
+          {election.candidates?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {election.results.map((candidate, index) => (
+              {election.candidates.map((candidate, index) => (
                 <div key={index} className="border rounded p-4 shadow-md">
                   <p className="text-lg font-semibold">{candidate.name}</p>
                   <button
                     onClick={() => handleVote(election.id, index)}
                     disabled={loading}
                     className={`mt-3 bg-blue-500 text-white px-4 py-2 rounded ${
-                      loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                      loading
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-blue-700"
                     }`}
                   >
                     {loading ? "Voting..." : "Vote Now"}

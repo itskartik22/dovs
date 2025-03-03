@@ -18,6 +18,7 @@ const Admin = () => {
     setMessage("");
     try {
       const response = await axiosInstance.get("/getAllElections");
+      console.log(response.data.elections);
       const formattedElections = response.data.elections.map(e => ({
         ...e,
         name: Array.isArray(e.name) ? e.name.join("") : e.name,

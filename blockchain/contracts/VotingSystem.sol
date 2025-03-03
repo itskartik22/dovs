@@ -99,15 +99,32 @@ contract VotingSystem {
     }
 
     // Get all elections
-    function getAllElections() public view returns (string[] memory, bool[] memory) {
+     function getAllElections() public view returns (
+        string[] memory, // electionNames
+        string[][] memory, // candidateNames
+        //uint[][] memory, // candidateVotes
+        bool[] memory // electionStatuses
+    ) {
         string[] memory electionNames = new string[](electionCount);
+        string[][] memory candidateNames = new string[][](electionCount);
+        //uint[][] memory candidateVotes = new uint[][](electionCount);
         bool[] memory electionStatuses = new bool[](electionCount);
 
         for (uint i = 0; i < electionCount; i++) {
             electionNames[i] = elections[i].name;
             electionStatuses[i] = elections[i].isActive;
+
+            uint candidateCount = elections[i].candidates.length;
+            candidateNames[i] = new string[](candidateCount);
+            //candidateVotes[i] = new uint[](candidateCount);
+
+            for (uint j = 0; j < candidateCount; j++) {
+                candidateNames[i][j] = elections[i].candidates[j].name;
+                //candidateVotes[i][j] = elections[i].candidates[j].voteCount;
+            }
         }
 
-        return (electionNames, electionStatuses);
+        return (electionNames, candidateNames, electionStatuses);
     }
+
 }
