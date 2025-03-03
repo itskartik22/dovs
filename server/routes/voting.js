@@ -168,4 +168,35 @@ router.post("/closeElection/:electionId", async (req, res) => {
     }
     });
 
+
+// Route to get all elections
+router.get("/getAllElections", async (req, res) => {
+  try {
+    console.log("Fetching all elections...");
+
+    const electionCount = await contractInstance.methods.electionCount().call();
+    let elections = [];
+
+    for (let i = 0; i < Number(electionCount); i++) {
+      const election = await contractInstance.methods.getAllElections(i).call();
+      elections.push({
+        id: i,
+        name: election[0][i],
+        isActive: election[1][i],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      elections,
+    });
+  } catch (error) {
+    console.error("Error fetching elections:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch elections. " + error.message,
+    });
+  }
+});
+
 module.exports = router;

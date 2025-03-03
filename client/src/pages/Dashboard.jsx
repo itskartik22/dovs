@@ -1,5 +1,7 @@
+"use client"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CastVote from "./CastVote.jsx";
 
 const Dashboard = () => {
   const [userAddress, setUserAddress] = useState(null);
@@ -150,6 +152,8 @@ const Dashboard = () => {
           </button>
         </div>
       )}
+
+      <CastVote />
     </div>
   );
 };

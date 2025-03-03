@@ -97,4 +97,17 @@ contract VotingSystem {
     function closeElection(uint _electionId) public onlyOwner onlyValidElection(_electionId) {
         elections[_electionId].isActive = false;
     }
+
+    // Get all elections
+    function getAllElections() public view returns (string[] memory, bool[] memory) {
+        string[] memory electionNames = new string[](electionCount);
+        bool[] memory electionStatuses = new bool[](electionCount);
+
+        for (uint i = 0; i < electionCount; i++) {
+            electionNames[i] = elections[i].name;
+            electionStatuses[i] = elections[i].isActive;
+        }
+
+        return (electionNames, electionStatuses);
+    }
 }
