@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../api/axiosInstance.js";
 
-const CastVote = () => {
+const CastVote = ({voterId}) => {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +43,7 @@ const CastVote = () => {
       const res = await axiosInstance.post("/castVote", {
         electionId,
         candidateId,
-        accountInd: 1, // Default Account
+        accountInd: voterId,
       });
 
       if (res.data.success) {
