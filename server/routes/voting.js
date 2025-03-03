@@ -18,10 +18,12 @@ router.post("/createElection", async (req, res) => {
     const accounts = await web3.eth.getAccounts();
     console.log("Using account:", accounts[0]);
 
-    const result = await contractInstance.methods.createElection(name, candidates).send({
-      from: accounts[0], // Admin account
-      gas: 3000000,
-    });
+    const result = await contractInstance.methods
+      .createElection(name, candidates)
+      .send({
+        from: accounts[0], // Admin account
+        gas: 3000000,
+      });
     console.log("Election created with ID:", result);
 
     const electionCount = await contractInstance.methods.electionCount().call();
@@ -136,53 +138,65 @@ router.get("/getResults/:electionId", async (req, res) => {
 });
 
 router.post("/closeElection/:electionId", async (req, res) => {
-    try {
-        console.log("Closing Election...");
-        const { electionId } = req.params;
-    
-        if (electionId === undefined) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid request: 'electionId' is required.",
-        });
-        }
-    
-        const accounts = await web3.eth.getAccounts();
-        console.log("Using account:", accounts[0]);
-    
-        await contractInstance.methods.closeElection(electionId).send({
-        from: accounts[0], // Admin account
-        gas: 3000000,
-        });
-    
-        res.status(200).json({
-        success: true,
-        message: "Election closed successfully!",
-        });
-    } catch (error) {
-        console.error("Error closing election:", error);
-        res.status(500).json({
+  try {
+    console.log("Closing Election...");
+    const { electionId } = req.params;
+
+    if (electionId === undefined) {
+      return res.status(400).json({
         success: false,
-        message: "Failed to close election. " + error.message,
-        });
+        message: "Invalid request: 'electionId' is required.",
+      });
     }
+
+    const accounts = await web3.eth.getAccounts();
+    console.log("Using account:", accounts[0]);
+
+    await contractInstance.methods.closeElection(electionId).send({
+      from: accounts[0], // Admin account
+      gas: 3000000,
     });
 
+    res.status(200).json({
+      success: true,
+      message: "Election closed successfully!",
+    });
+  } catch (error) {
+    console.error("Error closing election:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to close election. " + error.message,
+    });
+  }
+});
 
 // Route to get all elections
 router.get("/getAllElections", async (req, res) => {
   try {
     console.log("Fetching all elections...");
 
-    const electionCount = await contractInstance.methods.electionCount().call();
-    let elections = [];
+    const electionsData = await contractInstance.methods.getAllElections().call();
 
-    for (let i = 0; i < Number(electionCount); i++) {
-      const election = await contractInstance.methods.getAllElections(i).call();
+    let elections = [];
+    const electionNames = electionsData[0];  // Array of election names
+    const candidateNames = electionsData[1]; // Array of candidate names per election
+    // const candidateVotes = electionsData[2]; // Array of candidate votes per election (BigInt values)
+    const electionStatuses = electionsData[2]; // Array of election statuses
+
+    for (let i = 0; i < electionNames.length; i++) {
+      let candidates = [];
+      for (let j = 0; j < candidateNames[i].length; j++) {
+        candidates.push({
+          name: candidateNames[i][j],
+          // voteCount: Number(candidateVotes[i][j]), // Convert BigInt to Number
+        });
+      }
+
       elections.push({
         id: i,
-        name: election[0][i],
-        isActive: election[1][i],
+        name: electionNames[i],
+        isActive: electionStatuses[i],
+        candidates: candidates,
       });
     }
 
@@ -198,5 +212,6 @@ router.get("/getAllElections", async (req, res) => {
     });
   }
 });
+
 
 module.exports = router;
