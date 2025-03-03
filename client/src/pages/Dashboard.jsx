@@ -89,8 +89,8 @@ const Dashboard = () => {
       {userAddress ? (
         <div className="text-lg text-gray-800 flex flex-col gap-2 items-center">
           <p>
-            Connected Wallet Address: {userAddress.slice(0, 6)}...
-            {userAddress.slice(-4)}
+            {/*Connected Wallet Address: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}*/}
+            Connected Wallet Address: {userAddress}
           </p>
           <button
             onClick={handleDisconnect}
