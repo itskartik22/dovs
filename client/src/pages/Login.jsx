@@ -58,7 +58,7 @@ const Login = () => {
 
   return (
     <div className="h-screen flex flex-col space-y-7 justify-center items-center">
-      <h2 className="text-4xl font-bold text-indigo-900">Welcome to Votify</h2>
+      <h2 className="text-4xl font-bold text-indigo-900">Welcome to DOVS</h2>
       <p className="text-center w-[80%]">
         Please connect your Metamask wallet to continue. If you don&apos;t have
         one, you can install it from{" "}
